@@ -189,7 +189,8 @@ class SessionStartEvent: NSObject, GDTCOREventDataObject {
     var fields = firebase_appquality_sessions_SessionEvent_fields
 
     let bytes = (transportBytes as NSData).bytes
-    var istream: pb_istream_t = pb_istream_from_buffer(bytes, transportBytes.count)
+    let bytes_pt: UnsafePointer<pb_byte_t> = bytes.assumingMemoryBound(to: pb_byte_t.self)
+    var istream: pb_istream_t = pb_istream_from_buffer(bytes_pt, transportBytes.count)
 
     if !pb_decode(&istream, &fields.0, &proto) {
       let errorMessage = FIRSESPBGetError(istream)
